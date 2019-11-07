@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Users = require('../model/user')
+const Pessoas = require('../model/pessoa')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
@@ -46,6 +47,20 @@ router.post('/create', auth, async (req, res) => {
         const user = await Users.create(req.body);
         user.password = undefined;
         return res.status(201).send(user);
+    } catch (error) {
+        return res.status(500).send({ erro: 'Erro ao criar usuários.'});
+    }
+});
+
+router.post('/newPessoa', auth, async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.send({ erro: 'Dados insuficientes.'});
+
+    try {
+        if (await Pessoas.findOne({ email })) return res.send('Usuário já registrado.');
+        const pessoa = await Pessoas.create(req.body);
+        pessoa.password = undefined;
+        return res.status(201).send(pessoa);
     } catch (error) {
         return res.status(500).send({ erro: 'Erro ao criar usuários.'});
     }
