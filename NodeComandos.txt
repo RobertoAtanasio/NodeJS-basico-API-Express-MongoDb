@@ -1,0 +1,145 @@
+
+-------------------------------------------------------------------------------------------------------------------------
+--> npm init
+
+Será criado o arquivo: package.json
+
+Imagem da instalação:
+
+C:\Udemy\NodeAPI>npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help json` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+package name: (nodeapi) api_nodejs
+version: (1.0.0)
+description:
+entry point: (index.js) app.js
+test command:
+git repository:
+keywords:
+author: Roberto Pires
+license: (ISC)
+About to write to C:\Udemy\NodeAPI\package.json:
+
+{
+  "name": "api_nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Roberto Pires",
+  "license": "ISC"
+}
+
+
+Is this OK? (yes) yes
+
+C:\Udemy\NodeAPI>
+-------------------------------------------------------------------------------------------------------------------------
+
+--> npm install express --save
+
+* Criar a pasta: Routes
+* Criar em Routes os arquivos: index.js e users.js
+* Em app.js, criar:
+  const indexRoute = require('./Routes/index')
+  const usersRoute = require('./Routes/users')
+
+* Associar as rotas:
+  app.use('/', indexRoute)
+  app.use('/users', usersRoute)
+
+* Criar os endpoints em index.js
+  router.get('/', (req, res) => {
+      return res.send({message: '`Tudo ok com o método GET da raiz'})
+  })
+
+  router.post('/users', (req, res) => {
+      return res.send({message: '`Tudo ok com o método POST da raiz'})
+  })
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Instalando o MongoDB:
+
+string de conexão:
+mongodb+srv://usuario_admin:<password>@clusterapi-hto5v.mongodb.net/test?retryWrites=true&w=majority
+
+acessar: mongoosejs.com
+  --> para trabalhar com o banco de dados
+
+-------------------------------------------------------------------------------------------------------------------------
+
+instalar as dependências do projeto:
+  --> npm install mongoose --save
+  --> npm install body-parser --save
+
+em seguida, instanciar as dependências em app.js:
+  const mongoose = require('mongoose')
+  const bodyParser = require('body-parser')
+
+criar a URL do MongoDB:
+  const url = "mongodb+srv://usuario_admin:<senhaaqui>@clusterapi-hto5v.mongodb.net/test?retryWrites=true&w=majority"
+  const options = { 
+      reconnectTries: Number.MAX_VALUE, 
+      reconnectInterval: 500, 
+      poolSize: 5, 
+      useNewUrlParser: true 
+  }
+  mongoose.connect(url, options);
+  mongoose.set('useCreateIndex', true);
+
+Efetuar a conexção com o MongoDB:
+  mongoose.connection.on( 'error', (err) => {
+      console.log('Erro na conexão com o banco de dados: ' + erro);
+  })
+
+  mongoose.connection.on( 'disconnected', () => {
+      console.log('Banco de dados desconectado');
+  })
+
+Configurar o Body-Parser:
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+
+Configurar o arquivo model do bando de dadps:
+  criado o arquivo: model/user.js
+
+Em Routes/users.js, importar o arquivo model acima.
+  const Users = require('../model/user')
+
+Encriptografando a senha do usuário usando o BCrypt:
+  --> npm install bcrypt --save
+
+  --> importar o bcrypt em model/user.js
+  --> importar o bcrypt em Routes/users.js
+
+-------------------------------------------------------------------------------------------------------------------------
+Para executar a API:
+	--> node app.js
+	
+-------------------------------------------------------------------------------------------------------------------------
+Instalar o JSONWEBTOKEN (JWT):
+
+	--> npm install jsonwebtoken --save
+	
+Em Routes/user.js, criar os script referentes ao Token:
+	importar: const jwt = require('josnwebtoken');
+	
+Para trabalharmos com o Token, criaremos a pasta middlewares/auth.js
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Criando arquivo de configuração:
+	--> criar pasta: conf
+	--> criar arquivo: config.js
+	--> para setar a variável de ambiente, faça no prompt, por exemplo: set NODE_ENV=prod
